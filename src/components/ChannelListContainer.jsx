@@ -41,7 +41,12 @@ const logout = () => {
   window.location.reload();
 };
 
-const ChannelListContainer = () => {
+const ChannelListContainer = ({
+  isCreating,
+  setIsCreating,
+  setCreateType,
+  setIsEditing,
+}) => {
   return (
     <>
       <Sidebar logout={logout} />
@@ -60,10 +65,24 @@ const ChannelListContainer = () => {
           filters={{}}
           channelRenderFilterFn={() => {}}
           List={(listProps) => (
-            <TeamChannelList {...listProps} type="messaging" />
+            <TeamChannelList
+              {...listProps}
+              type="messaging"
+              isCreating={isCreating}
+              setIsEditing={setIsEditing}
+              setIsCreating={setIsCreating}
+              setCreateType={setCreateType}
+            />
           )}
           Preview={(previewProps) => (
-            <TeamChannelPreview {...previewProps} type="messaging" />
+            <TeamChannelPreview
+              {...previewProps}
+              type="messaging"
+              isCreating={isCreating}
+              setIsEditing={setIsEditing}
+              setIsCreating={setIsCreating}
+              setCreateType={setCreateType}
+            />
           )}
         />
       </div>
