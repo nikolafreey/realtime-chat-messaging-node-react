@@ -7,11 +7,26 @@ import Cookies from "universal-cookie";
 import { ChanellContainer, ChanellListContainer, Auth } from "./components";
 import "./App.css";
 
+const cookies = new Cookies();
+
 const apiKey = "42ttr4jpkcyj";
+const authToken = cookies.get("token");
 
 const client = StreamChat.getInstance(apiKey);
 
-const authToken = false;
+if (authToken) {
+  client.connectUser(
+    {
+      id: cookies.get("userId"),
+      name: cookies.get("username"),
+      fullName: cookies.get("fullName"),
+      image: cookies.get("avatarURL"),
+      phoneNumber: cookies.get("phoneNumber"),
+      hashedPassword: cookies.get("hashedPassword"),
+    },
+    authToken
+  );
+}
 
 const App = () => {
   if (!authToken) return <Auth />;

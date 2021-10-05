@@ -5,6 +5,8 @@ import axios from "axios";
 import signInImage from "../assets/signup.jpg";
 import { EVENT_MAP } from "stream-chat";
 
+const cookies = new Cookies();
+
 const Auth = () => {
   const initialState = {
     fullName: "",
@@ -15,7 +17,7 @@ const Auth = () => {
     avatarURL: "",
   };
 
-  const [isSignup, setIsSignup] = useState(false);
+  const [isSignup, setIsSignup] = useState(true);
   const [form, setForm] = useState(initialState);
 
   const handleChange = (event) => {
@@ -26,8 +28,35 @@ const Auth = () => {
     setIsSignup((prevIsSignup) => !prevIsSignup);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const { fullName, username, password, phoneNumber, avatarURL } = form;
+
+    const URL = "http://localhost:5000";
+
+    const {
+      data: { token, userId, hashedPassword },
+    } = await axios.post(`${URL}/auth/${isSignup ? "signup" : "login"}`, {
+      username,
+      password,
+      fullName,
+      phoneNumber,
+      avatarURL,
+    });
+
+    cookies.set("token", token);
+    cookies.set("username", username);
+    cookies.set("fullName", fullName);
+    cookies.set("userId", userId);
+
+    if (isSignup) {
+      cookies.set("phoneNumber", phoneNumber);
+      cookies.set("avatarURL", avatarURL);
+      cookies.set("hashedPassword", hashedPassword);
+    }
+
+    window.location.reload();
   };
 
   return (
@@ -104,7 +133,7 @@ const Auth = () => {
                 />
               </div>
             )}
-            <div className="auth__form-container_fields-contnet_button">
+            <div className="auth__form-container_fields-content_button">
               <button>{isSignup ? "Sign Up" : "Sign In"}</button>
             </div>
           </form>
